@@ -73,7 +73,7 @@ package com.reyco1.multiuser.debug
 		{
 			trace(toTrace);
 			if(textArea)
-				textArea.appendText(toTrace + "/n");
+				textArea.appendText(toTrace + "\n");
 		}
 	}
 }

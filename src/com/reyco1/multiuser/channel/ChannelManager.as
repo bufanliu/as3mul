@@ -6,6 +6,8 @@ package com.reyco1.multiuser.channel
 	import flash.events.IEventDispatcher;
 	import flash.events.NetStatusEvent;
 	import flash.media.Camera;
+	import flash.media.Microphone;
+	import flash.media.Video;
 	import flash.net.NetStream;
 	
 	/**
@@ -21,6 +23,7 @@ package com.reyco1.multiuser.channel
 		public  var sendStream:NetStream;
 		public  var streamMethod:String;
 		public  var myCamera:Camera;
+		public  var myMic:Microphone;
 		
 		/**
 		 * Creates an instance of the ChannelManager class 
@@ -52,18 +55,48 @@ package com.reyco1.multiuser.channel
 		}
 		
 		/**
-		 * @private 
-		 * @param value
+		 * Creates a Camera instance and attaches it to the send stream. The Camera instance is returned where you can then add it to a Video instance or change its properties. 
+		 * @param snapshotMilliseconds
+		 * @return 
 		 * 
 		 */		
-		public function set sendCamera(value:Boolean):void
+		public function sendCamera(snapshotMilliseconds:int = -1):Camera
 		{
-			if(value)
-				myCamera = Camera.getCamera();
-			else
-				myCamera = null;
-			
-			sendStream.attachCamera( myCamera );			
+			myCamera = Camera.getCamera();
+			sendStream.attachCamera( myCamera, snapshotMilliseconds );
+			return myCamera;
+		}
+		
+		/**
+		 * Detaches the Camera instance and sets it to null. 
+		 * 
+		 */		
+		public function stopCamera():void
+		{
+			sendStream.attachCamera( null );
+			myCamera = null;
+		}
+		
+		/**
+		 * Creates a Microphone instance and attaches it to the send stream. The Microphone instance is then returned where you can then change its proerties. 
+		 * @return 
+		 * 
+		 */		
+		public function sendAudio():Microphone
+		{
+			myMic = Microphone.getEnhancedMicrophone();
+			sendStream.attachAudio( myMic );
+			return myMic;
+		}
+		
+		/**
+		 * Detaches the Microphone instance from the send stream and then sets it to null. 
+		 * 
+		 */		
+		public function stopAudio():void
+		{
+			sendStream.attachAudio( null );
+			myMic = null;
 		}
 		
 		/**
@@ -76,6 +109,27 @@ package com.reyco1.multiuser.channel
 		{
 			var realtimeChannel:RealtimeChannel = new RealtimeChannel(session.connection, peerID, session.group.myUser.id, clientObject);
 			channels.push(realtimeChannel);
+		}
+		
+		
+		/**
+		 * Returns an instance of the RealtimeChannel which matches the peerID provided 
+		 * @param peerID
+		 * @return 
+		 * 
+		 */
+		public function getChannelByPeerID(peerID:String):RealtimeChannel
+		{
+			var channel:RealtimeChannel;
+			for (var a:int = 0; a < channels.length; a++) 
+			{
+				if(channels[a].peerID == peerID)
+				{
+					channel = channels[a];
+					break;
+				}
+			}
+			return channel;			
 		}
 		
 		/**

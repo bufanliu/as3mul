@@ -1,5 +1,7 @@
 package com.reyco1.multiuser.channel
 {
+	import flash.media.SoundTransform;
+	import flash.media.Video;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
 
@@ -34,6 +36,44 @@ package com.reyco1.multiuser.channel
 		public function close():void
 		{
 			receiveStream.close();
+		}
+		
+		/**
+		 * Determines if incoming audio should play on this stream 
+		 * @param value
+		 * 
+		 */		
+		public function receiveAudio(value:Boolean):void
+		{
+			receiveStream.receiveAudio(value);
+		}
+		
+		/**
+		 * Sets the volume of the incoming audio 
+		 * @param value
+		 * 
+		 */		
+		public function setVolume(value:Number):void
+		{
+			if (receiveStream)
+			{
+				var volume:Number = value;
+				var st:SoundTransform = new SoundTransform(volume);
+				receiveStream.soundTransform = st;
+			}
+		}
+		
+		/**
+		 * Specifies if incoming video plays on the stream. If a videoObject is specified, then the stream is attached to that object.
+		 * @param value
+		 * @param videoObject
+		 * 
+		 */		
+		public function receiveVideo(value:Boolean, videoObject:Video = null):void
+		{
+			receiveStream.receiveVideo(value);
+			if(videoObject)
+				videoObject.attachNetStream( receiveStream );
 		}
 	}
 }

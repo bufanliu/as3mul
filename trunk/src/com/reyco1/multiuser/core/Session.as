@@ -52,6 +52,7 @@ package com.reyco1.multiuser.core
 			this.groupName 	   = groupName;
 			
 			groupspec = new GroupSpecifier(groupName);
+			groupspec.multicastEnabled		= true;
 			groupspec.postingEnabled 		= true;
 			groupspec.serverChannelEnabled 	= true;
 			groupspec.routingEnabled 		= true;
